@@ -1,6 +1,6 @@
 ## MULTILAYER PERCEPTRON IMPLEMENTATION V 1.0
 ## HARD CODED VERSION, WILL MAKE IT DYNAMIC IN THE NEXT CELL
-from lin_alg import mat_mult, init_matrix
+from linear_algebra import mat_mult, init_matrix
 import math
 
 
