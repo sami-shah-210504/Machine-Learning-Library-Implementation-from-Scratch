@@ -2,7 +2,7 @@
 
 A collection of machine-learning algorithms implemented from scratch in Python.
 
-The goal of this project is not to build production-ready ML software. It is to understand what is happening underneath higher-level libraries such as NumPy, scikit-learn, and PyTorch by implementing the core mathematics and training procedures manually.
+The goal of this project is to understand what is happening underneath higher-level libraries such as NumPy, scikit-learn, and PyTorch by implementing the core mathematics and training procedures manually.
 
 ## Current Progress
 
