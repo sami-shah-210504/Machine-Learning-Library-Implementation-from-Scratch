@@ -14,8 +14,6 @@ def dot_product(x, y): # both are lists but x is a row and y is column
     total = total+ (x[i]*y[i])
   return total # returns a
 
-# im using the function below to index a column of a matrix since i am not too familiar with comprehensions
-# to be or not to be, that is the question. 
 def col(b, col): # converts a column of a 2-d list/list-of-lists to a list
                  # 'col' is the index of the column we want to convert
   col_list =list()
@@ -36,17 +34,17 @@ def col(b, col): # converts a column of a 2-d list/list-of-lists to a list
 #                    # the "multiply->add->append" logic of the nested loop in the
 #                    # mat_mult() function
 #   return mat
-def init_matrix(rows, cols): # takes number of rows and columns as input
-                             # returns a zero matrix with same number of rows and columns
+def init_matrix(rows, cols): # takes number of rows and columns of matrix as input
+                             # returns a zero matrix with same rows and columns
   mat = list()
 
   for i in range(rows):
-    mat.append([]) # create a new row i
-    for j in range(cols): 
-      mat[i].append(0) # create new column by appending 0 to the list in row i. do this j times and you got j columns
-  return mat          # [0, 0, 0,....],
-                      # [0, 0, 0,....],
-                      # [0, 0, 0,....],
+    mat.append([])
+    for j in range(cols):
+      mat[i].append(0)
+  return mat         # [0, 0, 0,....],
+  #                     [0, 0, 0,....],
+  #                     [0, 0, 0,....],
 
 # chatGPT generated fixed validator
 # im sorry god. i have failed you
@@ -125,6 +123,34 @@ def mat_add(a, b):
         result[i][j]=(a[i][j]+b[i][j])
   return result
 
+def mat_sub(mat_a, mat_b):
+  result = init_matrix(len(mat_a), len(mat_a[0]))
+  for i in range(len(mat_a)):
+    for j in range(len(mat_a[0])):
+      result[i][j] = mat_a[i][j] - mat_b[i][j]
+  return result
+
+
+def hadamard_prod(mat_a, mat_b): # elementwise multiplication
+  result = init_matrix(len(mat_a), len(mat_a[0]))
+  for i in range(len(mat_a)):
+    for j in range(len(mat_a[0])):
+      result[i][j] = mat_a[i][j] * mat_b[i][j]
+  return result
+
+def scale_matrix(mat, scalar):
+  result = init_matrix(len(mat), len(mat[0]))
+  for i in range(len(mat)):
+    for j in range(len(mat[0])):
+      result[i][j] = mat[i][j] * scalar
+  return result
+
+def transpose(mat):
+  result = init_matrix(len(mat[0]), len(mat))
+  for i in range(len(mat)):
+    for j in range(len(mat[0])):
+      result[j][i] = mat[i][j]
+  return result
 
 if __name__=='__main__':
   a = [[1, 0],

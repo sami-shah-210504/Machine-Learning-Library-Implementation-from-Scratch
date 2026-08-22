@@ -125,5 +125,30 @@ class mlp:
       losses.append(current_loss)
     return losses
 
-mlp = mlp()
-print(mlp.forward())
+if __name__ == "__main__":
+  x = [
+        [[0.0],[0.0]],
+        [[0.0],[1.0]],
+        [[1.0],[0.0]],
+        [[1.0],[1.0]]
+    ]
+  y = [0, 1, 1, 0]
+
+  mlp = mlp(epochs=10000, eta=0.5)
+  print("Initial weights:", mlp.weights)
+  print("Initial bias:", mlp.bias)
+
+  losses = []
+  for epoch in range(mlp.epochs):
+    epoch_loss = 0
+  for i in range(len(x)):
+    current_loss = mlp.train_step(x[i], y[i])
+    epoch_loss = epoch_loss + current_loss
+    epoch_loss = epoch_loss / len(x)
+    losses.append(epoch_loss)
+
+  print("Final losses:", losses)
+
+  for i in range(len(x)):
+    prediction = mlp.forward(x[i])
+    print("Input:", x[i], "Predicted:", prediction[0][0], "Actual:", y[i])  
