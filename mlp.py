@@ -16,10 +16,10 @@ class mlp:
     self.bias = bias
     self.num_layers = len(self.weights)
     self.z = []
-    self.a = []
+    self.activations = []
     for i in range(self.num_layers):
       self.z.append(None)
-      self.a.append(None)
+      self.activations.append(None)
 
   def sigmoid(self, mat):
     mat_output=init_matrix(len(mat), len(mat[0]))
@@ -46,10 +46,10 @@ class mlp:
       w = self.weights[i]
       b = self.bias[i]
       self.z[i] = mat_add(mat_mult(w, prev_activation), b)
-      self.a[i] = self.sigmoid(self.z[i])
-      prev_activation = self.a[i]
+      self.activations[i] = self.sigmoid(self.z[i])
+      prev_activation = self.activations[i]
 
-    return self.a[self.num_layers-1]
+    return self.activations[self.num_layers-1]
 
   def loss(self, y_act, y_pred):
     return -((y_act*math.log(y_pred))+(1-y_act)*math.log(1-y_pred))
@@ -61,7 +61,7 @@ class mlp:
     error = self.output_error(y_pred, y_act)
     delta = [[error]]
 
-    prev_activation = self.a[self.num_layers-2]
+    prev_activation = self.activations[self.num_layers-2]
     prev_activation_transpose = transpose(prev_activation)
     dW = mat_mult(delta, prev_activation_transpose)
     db = delta
@@ -78,7 +78,7 @@ class mlp:
     if layer_index == 0:
       prev_activation = self.inputs
     else:
-      prev_activation = self.a[layer_index-1]
+      prev_activation = self.activations[layer_index-1]
 
     prev_activation_transpose = transpose(prev_activation)
     dW = mat_mult(delta, prev_activation_transpose)
@@ -134,7 +134,7 @@ if __name__ == "__main__":
     ]
   y = [0, 1, 1, 0]
 
-  mlp = mlp(epochs=10000, eta=0.5)
+  mlp = mlp(epochs=10, eta=0.5)
   print("Initial weights:", mlp.weights)
   print("Initial bias:", mlp.bias)
 
