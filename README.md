@@ -12,7 +12,7 @@ Most ML libraries hide the math behind function calls. This project implements e
 - **`perceptron.py`** — A single-layer perceptron with configurable learning rate, bias, and epochs. Uses step activation and updates weights based on prediction error.
 - **`logistic_regression.py`** — Logistic regression using sigmoid activation and binary cross-entropy loss, trained with gradient descent.
 - **`mlp.py`** — A multilayer perceptron (dynamic number of layers) with forward propagation, backpropagation, and gradient descent, built entirely on the matrix operations above.
-- **`ML_Library_From_Scratch(3).ipynb`** — Notebook version used for development, testing, and experimentation.
+- **`ML_Library_From_Scratch(3).ipynb`** — Notebook version used for development, testing, and experimentation. Each cell represents a different version of the same code. In other words, any improvement I make to the V1.0 of the code will be implemented in V2.0 in the subsequent cell.
 
 ## How it's built
 
