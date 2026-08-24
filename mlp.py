@@ -48,6 +48,9 @@ class mlp:
       self.z.append(None)
       self.activations.append(None)
 
+
+  # sigmoid function takes a vector or matrix as input and returns a 
+  # vector or matrix of the same size. 
   def sigmoid(self, mat):
     mat_output = init_matrix(len(mat), len(mat[0]))
 
@@ -57,6 +60,8 @@ class mlp:
 
     return mat_output
 
+ # same as sigmoid() but returns the derivative of the 
+ # sigmoid function instead of the sigmoid function itself
   def sigmoid_derivative(self, mat):
     mat_output = init_matrix(len(mat), len(mat[0]))
 
@@ -75,53 +80,41 @@ class mlp:
 
     self.inputs = x
 
+    # activations in the previous layer saved in prev_activation
+    # it is initialised to the inputs so that the first layer 
+    # can use the inputs to calculate its activations
     prev_activation = self.inputs
 
     for i in range(self.num_layers):
-
+      # weights and biases matrix for this layer
       w = self.weights[i]
       b = self.bias[i]
 
-      self.z[i] = mat_add(
-          mat_mult(w, prev_activation),
-          b
-      )
 
+      self.z[i] = mat_add(mat_mult(w, prev_activation),b)
       self.activations[i] = self.sigmoid(self.z[i])
-
       prev_activation = self.activations[i]
 
     return self.activations[self.num_layers - 1]
 
 
   def loss(self, y_act, y_pred):
+    return -((y_act * math.log(y_pred))+((1 - y_act) * math.log(1 - y_pred)))
 
-    return -(
-        (y_act * math.log(y_pred))
-        +
-        ((1 - y_act) * math.log(1 - y_pred))
-    )
-
-
+  # derivative of the loss function with respect to the predicted output
   def output_error(self, y_pred, y_act):
-
     return y_pred - y_act
 
-
+  
   def output_gradients(self, y_act, y_pred):
 
     error = self.output_error(y_pred, y_act)
-
     delta = [[error]]
 
     prev_activation = self.activations[self.num_layers - 2]
     prev_activation_transpose = transpose(prev_activation)
 
-    dW = mat_mult(
-        delta,
-        prev_activation_transpose
-    )
-
+    dW = mat_mult(delta,prev_activation_transpose)
     db = delta
 
     return dW, db, delta
@@ -132,19 +125,10 @@ class mlp:
     w_next = self.weights[layer_index + 1]
     w_next_transpose = transpose(w_next)
 
-    propagated_error = mat_mult(
-        w_next_transpose,
-        delta_next
-    )
+    propagated_error = mat_mult(w_next_transpose,delta_next)
+    sig_deriv_z = self.sigmoid_derivative(self.z[layer_index])
 
-    sig_deriv_z = self.sigmoid_derivative(
-        self.z[layer_index]
-    )
-
-    delta = hadamard_prod(
-        propagated_error,
-        sig_deriv_z
-    )
+    delta = hadamard_prod(propagated_error,sig_deriv_z)
 
     if layer_index == 0:
       prev_activation = self.inputs
@@ -153,10 +137,7 @@ class mlp:
 
     prev_activation_transpose = transpose(prev_activation)
 
-    dW = mat_mult(
-        delta,
-        prev_activation_transpose
-    )
+    dW = mat_mult(delta,prev_activation_transpose)
 
     db = delta
 
@@ -165,15 +146,9 @@ class mlp:
 
   def update_params(self, param, gradient):
 
-    scaled_gradient = scale_matrix(
-        gradient,
-        self.eta
-    )
+    scaled_gradient = scale_matrix(gradient,self.eta)
 
-    return mat_sub(
-        param,
-        scaled_gradient
-    )
+    return mat_sub(param,scaled_gradient)
 
 
   def train_step(self, x, y_act):
@@ -219,10 +194,7 @@ class mlp:
       # Iterate over samples
       for i in range(len(x)):
 
-        current_loss = self.train_step(
-            x[i],
-            y_act[i]
-        )
+        current_loss = self.train_step(x[i], y_act[i])
 
         epoch_loss += current_loss
 
@@ -231,12 +203,7 @@ class mlp:
 
       losses.append(epoch_loss)
 
-      print(
-          "Epoch:",
-          epoch + 1,
-          "Loss:",
-          epoch_loss
-      )
+      print("Epoch:",epoch + 1,"Loss:",epoch_loss)
 
     return losses
 
