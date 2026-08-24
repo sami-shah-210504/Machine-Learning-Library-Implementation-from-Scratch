@@ -11,14 +11,7 @@ def sigmoid(x):
 
 class mlp:
 
-  def __init__(
-      self,
-      epochs=10,
-      eta=1.0,
-      inputs=None,
-      weights=None,
-      bias=None
-  ):
+  def __init__(self, epochs=10, eta=1.0, inputs=[[0.35],[0.9]], weights=[[[0.1, 0.8],[0.4, 0.6]],[[0.3, 0.9]]], bias = [[[0.0],[0.0]], [[0.0]]]):
     self.epochs = epochs
     self.eta = eta
 
@@ -55,7 +48,6 @@ class mlp:
       self.z.append(None)
       self.activations.append(None)
 
-
   def sigmoid(self, mat):
     mat_output = init_matrix(len(mat), len(mat[0]))
 
@@ -64,7 +56,6 @@ class mlp:
         mat_output[i][j] = sigmoid(mat[i][j])
 
     return mat_output
-
 
   def sigmoid_derivative(self, mat):
     mat_output = init_matrix(len(mat), len(mat[0]))
@@ -186,17 +177,11 @@ class mlp:
 
 
   def train_step(self, x, y_act):
-
-    # Forward pass for ONE sample
     y_pred_matrix = self.forward(x)
 
     y_pred = y_pred_matrix[0][0]
 
-    # Loss for ONE sample
-    current_loss = self.loss(
-        y_act,
-        y_pred
-    )
+    current_loss = self.loss(y_act, y_pred)
 
     dW_list = []
     db_list = []
@@ -205,40 +190,19 @@ class mlp:
       dW_list.append(None)
       db_list.append(None)
 
-    # Output layer gradients
-    output_layer_index = self.num_layers - 1
-
-    dW, db, delta = self.output_gradients(
-        y_act,
-        y_pred
-    )
-
+    output_layer_index = self.num_layers-1
+    dW, db, delta = self.output_gradients(y_act, y_pred)
     dW_list[output_layer_index] = dW
     db_list[output_layer_index] = db
 
-    # Hidden layer gradients
-    for i in range(output_layer_index - 1, -1, -1):
-
-      dW, db, delta = self.hidden_gradients(
-          delta,
-          i
-      )
-
+    for i in range(output_layer_index-1, -1, -1):
+      dW, db, delta = self.hidden_gradients(delta, i)
       dW_list[i] = dW
       db_list[i] = db
 
-    # Update all parameters
     for i in range(self.num_layers):
-
-      self.weights[i] = self.update_params(
-          self.weights[i],
-          dW_list[i]
-      )
-
-      self.bias[i] = self.update_params(
-          self.bias[i],
-          db_list[i]
-      )
+      self.weights[i] = self.update_params(self.weights[i], dW_list[i])
+      self.bias[i] = self.update_params(self.bias[i], db_list[i])
 
     return current_loss
 
