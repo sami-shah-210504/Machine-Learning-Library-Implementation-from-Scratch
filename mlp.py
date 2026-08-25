@@ -90,14 +90,17 @@ class mlp:
       w = self.weights[i]
       b = self.bias[i]
 
-
+      # z = w*(prev_activation) + b
+      # weighted sum and activation for each input using matrix multiplication and addition
       self.z[i] = mat_add(mat_mult(w, prev_activation),b)
       self.activations[i] = self.sigmoid(self.z[i])
       prev_activation = self.activations[i]
 
+    # return the very last activation i.e y_pred
     return self.activations[self.num_layers - 1]
 
-
+  # loss function tells you how much you lost and grieved in life
+  # the tragedies, the dissapointments, the failures
   def loss(self, y_act, y_pred):
     return -((y_act * math.log(y_pred))+((1 - y_act) * math.log(1 - y_pred)))
 
@@ -111,11 +114,14 @@ class mlp:
     error = self.output_error(y_pred, y_act)
     delta = [[error]]
 
-    prev_activation = self.activations[self.num_layers - 2]
-    prev_activation_transpose = transpose(prev_activation)
+    prev_activation = self.activations[self.num_layers - 2] # -2 because we are doing zero indexing and we want the second last layer's activation
+    prev_activation_transpose = transpose(prev_activation) # take a wild guess what the transpose function does
 
-    dW = mat_mult(delta,prev_activation_transpose)
-    db = delta
+    
+    dW = mat_mult(delta,prev_activation_transpose) # dL/dW = delta * prev_activation_transpose. this accounts for all weights in the output layer
+                                                   # delta is a 1x1 matrix and prev_activation_transpose is a 1x2 matrix, 
+                                                   # so the result is a 1x2 matrix which is the same shape as the weights in the output layer
+    db = delta 
 
     return dW, db, delta
 
