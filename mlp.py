@@ -128,15 +128,17 @@ class mlp:
 
   def hidden_gradients(self, delta_next, layer_index):
 
-    w_next = self.weights[layer_index + 1]
+    w_next = self.weights[layer_index + 1] # weights of the next layer propagated back to the current layer
     w_next_transpose = transpose(w_next)
 
     propagated_error = mat_mult(w_next_transpose,delta_next)
     sig_deriv_z = self.sigmoid_derivative(self.z[layer_index])
 
-    delta = hadamard_prod(propagated_error,sig_deriv_z)
+    delta = hadamard_prod(propagated_error,sig_deriv_z) # delta = propagated_error * sigmoid_derivative(z) where * is the hadamard product
 
-    if layer_index == 0:
+    if layer_index == 0: # if this is the first layer, previous activation is
+                         # the input layer, 
+                         # so we use self.inputs instead of self.activations[layer_index - 1]
       prev_activation = self.inputs
     else:
       prev_activation = self.activations[layer_index - 1]
@@ -144,7 +146,6 @@ class mlp:
     prev_activation_transpose = transpose(prev_activation)
 
     dW = mat_mult(delta,prev_activation_transpose)
-
     db = delta
 
     return dW, db, delta
@@ -152,7 +153,9 @@ class mlp:
 
   def update_params(self, param, gradient):
 
-    scaled_gradient = scale_matrix(gradient,self.eta)
+    # gradient descent for updating the weights and biases in the network
+    # param is weights and biases matrix 
+    scaled_gradient = scale_matrix(gradient,self.eta) 
 
     return mat_sub(param,scaled_gradient)
 
@@ -243,11 +246,4 @@ if __name__ == "__main__":
 
     prediction = model.forward(x[i])
 
-    print(
-        "Input:",
-        x[i],
-        "Predicted:",
-        prediction[0][0],
-        "Actual:",
-        y[i]
-    )
+    print("Input:",x[i],"Predicted:",prediction[0][0],"Actual:",y[i])
