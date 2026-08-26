@@ -144,7 +144,6 @@ class mlp:
       prev_activation = self.activations[layer_index - 1]
 
     prev_activation_transpose = transpose(prev_activation)
-
     dW = mat_mult(delta,prev_activation_transpose)
     db = delta
 
@@ -160,7 +159,9 @@ class mlp:
     return mat_sub(param,scaled_gradient)
 
 
-  def train_step(self, x, y_act):
+  def train_step(self, x, y_act): # performs a forwards pass then a 
+                                  # backwards pass and updates the weights and biases 
+                                  # in the network
 
     y_pred_matrix = self.forward(x)
     y_pred = y_pred_matrix[0][0] # result of the forward pass is 
@@ -180,11 +181,14 @@ class mlp:
     dW_list[output_layer_index] = dW
     db_list[output_layer_index] = db
 
+    # propagate the error backwards through the network 
+    # to calculate the gradients for the hidden layers
     for i in range(output_layer_index-1, -1, -1):
       dW, db, delta = self.hidden_gradients(delta, i)
       dW_list[i] = dW
       db_list[i] = db
 
+    # update the weights and biases in the network using the calculated gradients
     for i in range(self.num_layers):
       self.weights[i] = self.update_params(self.weights[i], dW_list[i])
       self.bias[i] = self.update_params(self.bias[i], db_list[i])
@@ -193,26 +197,20 @@ class mlp:
 
 
   def train(self, x, y_act):
-
     losses = []
 
     # iterate over epochs
     for epoch in range(self.epochs):
-
       epoch_loss = 0
 
       # iterate over samples
       for i in range(len(x)):
-
         current_loss = self.train_step(x[i], y_act[i])
-
         epoch_loss += current_loss
 
       # average loss over the dataset
       epoch_loss = epoch_loss / len(x)
-
       losses.append(epoch_loss)
-
       print("Epoch:",epoch + 1,"Loss:",epoch_loss)
 
     return losses
