@@ -161,11 +161,12 @@ class mlp:
 
 
   def train_step(self, x, y_act):
+
     y_pred_matrix = self.forward(x)
+    y_pred = y_pred_matrix[0][0] # result of the forward pass is 
+                                 # a 1x1 matrix, so we extract the value from it
 
-    y_pred = y_pred_matrix[0][0]
-
-    current_loss = self.loss(y_act, y_pred)
+    current_loss = self.loss(y_act, y_pred) # loss with the current parameters
 
     dW_list = []
     db_list = []
@@ -195,19 +196,19 @@ class mlp:
 
     losses = []
 
-    # Iterate over epochs
+    # iterate over epochs
     for epoch in range(self.epochs):
 
       epoch_loss = 0
 
-      # Iterate over samples
+      # iterate over samples
       for i in range(len(x)):
 
         current_loss = self.train_step(x[i], y_act[i])
 
         epoch_loss += current_loss
 
-      # Average loss over the dataset
+      # average loss over the dataset
       epoch_loss = epoch_loss / len(x)
 
       losses.append(epoch_loss)
